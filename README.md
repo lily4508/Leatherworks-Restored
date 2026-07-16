@@ -1,5 +1,5 @@
 # Leatherworks ~ Restored!
-Leatherworks is a mod, that gives players a way to renew leather to craft and mend items in the game and/or added by other mods.
+Leatherworks is a mod, created by TonisGaming, that gives players a way to renew leather to craft and mend items in the game and/or added by other mods.
 
 * Find treebark to create tanning or turn it into prepared treebark
 * Turn prepared treebark into different foods or create flour from grinding a large amount of fried prepared bark with a hammer or stone
@@ -67,8 +67,10 @@ https://github.com/TonisGaming/Leatherworks/assets/18740935/66da02ba-7129-4f36-a
 
 ## Credits
 
+TonisGaming for creating the mod in the first place!!
+
 Cola98765 for basically fixing all the main bugs!
 
-Jods for making [Modder's Tool Box](https://github.com/Jods-Its/Modders-Gear-Toolbox/releases)
+Jods for making [Modder's Tool Box](https://github.com/Jods-Its/Modders-Gear-Toolbox/releases) and updating it
 
 The Long Dark Modding Discord for being a help whenever I ran into issues and for having their code available, so I could actually have any idea on what to do with my lack of knowledge on code
