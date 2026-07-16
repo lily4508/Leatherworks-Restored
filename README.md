@@ -1,6 +1,4 @@
-# This mod and any other The Long Dark mod made by me (TonisGaming) has been discontinued
-
-# Leatherworks
+# Leatherworks ~ Restored!
 Leatherworks is a mod, that gives players a way to renew leather to craft and mend items in the game and/or added by other mods.
 
 * Find treebark to create tanning or turn it into prepared treebark
@@ -10,8 +8,7 @@ Leatherworks is a mod, that gives players a way to renew leather to craft and me
 
 # DLC is REQUIRED for this mod to work
 
-Currently, all future plans for this mod have been put on hold, due to data loss. Consider the mod finished in its current state.
-If you run into issues, do let me know, thanks
+If you run into issues or have suggestions, please do let me know, thanks!
 
 https://github.com/TonisGaming/Leatherworks/assets/18740935/74147ed5-ccf4-4e8c-9757-c59c7f5d2272
 
@@ -20,11 +17,16 @@ https://github.com/TonisGaming/Leatherworks/assets/18740935/66da02ba-7129-4f36-a
 ## Installation
 
 * Download the latest version from releases and place the .dll and .modcomponent into the mods folder
-* If you want compatibility with Camping Tools, download LeatherworksCT.dll instead of Leatherworks.dll
-
 * Requires [Modder's Tool Box](https://github.com/Jods-Its/Modders-Gear-Toolbox/releases) and [ModComponent](https://github.com/dommrogers/ModComponent) with its dependencies
 
 ## Changelog
+
+**V2.0:** ~ Restored!
+
+* Updated to current game version
+* Adjusted some recipe values as suggested
+* Fixed some scary bugs (thanks to cola98765)
+* Updated some localization files
 
 **V1.0:**
 
@@ -64,6 +66,8 @@ https://github.com/TonisGaming/Leatherworks/assets/18740935/66da02ba-7129-4f36-a
 
 
 ## Credits
+
+Cola98765 for basically fixing all the main bugs!
 
 Jods for making [Modder's Tool Box](https://github.com/Jods-Its/Modders-Gear-Toolbox/releases)
 
