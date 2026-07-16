@@ -15,8 +15,8 @@ using System.Reflection;
 
 internal static class BuildInfo
 {
-	internal const string ModName = "Leatherworks";
+	internal const string ModName = "Leatherworks~Restored";
 	internal const string ModAuthor = "TonisGaming";
 
-	internal const string ModVersion = "1.2.1";
+	internal const string ModVersion = "2.0.0";
 }

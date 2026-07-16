@@ -51,5 +51,9 @@ namespace Leatherworks
         [Description("Enable The Ability To Grind Flour Using A Stone. By Default True")]
         public bool noGrind = true;
 
+        [Name("Able to Craft Flight Jacket?")]
+        [Description("Enable The Ability To Craft A Flight Jacket. By Default True")]
+        public bool noFlightJacket = true;
+
     }
 }

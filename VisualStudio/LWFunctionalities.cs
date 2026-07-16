@@ -1,11 +1,13 @@
-﻿using Il2Cpp;
-using Il2CppNodeCanvas.Tasks.Actions;
-using Il2CppProCore.Decals;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Il2Cpp;
+using Il2CppAK.Wwise;
+using Il2CppHoloville.HOTween.Core.Easing;
+using Il2CppNodeCanvas.Tasks.Actions;
+using Il2CppProCore.Decals;
 using UnityEngine;
 using static Il2CppMono.Security.X509.X520;
 
@@ -220,15 +222,15 @@ namespace Leatherworks
             //var knife3 = LeatherworksUtils.knifecamp1;
             //var knife4 = LeatherworksUtils.knifecamp2;
             var thisGearItem = LWFunctionalities.furItem;
-            furName = thisGearItem.gameObject.name;        
-        
+            furName = thisGearItem.gameObject.name;
+
             if (thisGearItem == null) return;
-            if (GameManager.GetInventoryComponent().GearInInventory(knife1, 1) || GameManager.GetInventoryComponent().GearInInventory(knife2, 1))
+            if (GameManager.GetInventoryComponent().GetBestGearItemWithName(knife1.name) || GameManager.GetInventoryComponent().GetBestGearItemWithName(knife2.name))
             {
                 GameAudioManager.PlayGuiConfirm();
                 InterfaceManager.GetPanel<Panel_GenericProgressBar>().Launch(Localization.Get("GAMEPLAY_LW_ScrapeProgressBar"), 5f, 0f, 0f,
                                 "PLAY_HARVESTINGLEATHER", null, false, true, new System.Action<bool, bool, float>(OnScrapeFurFinished));
-                GameManager.GetInventoryComponent().RemoveGearFromInventory(furName, 1);
+                thisGearItem.m_StackableItem.m_Units -= 1;
             }
             else
             {
@@ -239,8 +241,8 @@ namespace Leatherworks
         }
         private static void OnScrapeFurFinished(bool success, bool playerCancel, float progress)
         {
-            var knife1 = GameManager.GetInventoryComponent().GearInInventory(LeatherworksUtils.knife1, 1);
-            var knife2 = GameManager.GetInventoryComponent().GearInInventory(LeatherworksUtils.knife2, 1);
+            var knife1 = GameManager.GetInventoryComponent().GetBestGearItemWithName(LeatherworksUtils.knife1.name);
+            var knife2 = GameManager.GetInventoryComponent().GetBestGearItemWithName(LeatherworksUtils.knife2.name);
             //var knife3 = GameManager.GetInventoryComponent().GearInInventory(LeatherworksUtils.knifecamp1, 1);
             //var knife4 = GameManager.GetInventoryComponent().GearInInventory(LeatherworksUtils.knifecamp2, 1);
 
@@ -258,11 +260,11 @@ namespace Leatherworks
             {
                 GameManager.GetPlayerManagerComponent().InstantiateItemInPlayerInventory(LeatherworksUtils.leatherParts, wolfdeeryield);
 
-                if (GameManager.GetInventoryComponent().GearInInventory(knife1, 1))
+                if (GameManager.GetInventoryComponent().GetBestGearItemWithName(knife1.name))
                 {
                     knife1.m_CurrentHP = knife1.m_CurrentHP - 10;
                 }
-                else if (GameManager.GetInventoryComponent().GearInInventory(knife2, 1))
+                else if (GameManager.GetInventoryComponent().GetBestGearItemWithName(knife2.name))
                 {
                     knife2.m_CurrentHP = knife2.m_CurrentHP - 10;
                 }
@@ -278,12 +280,12 @@ namespace Leatherworks
             else if (furName.ToLowerInvariant().Contains("rabbit"))
             {
                 GameManager.GetPlayerManagerComponent().InstantiateItemInPlayerInventory(LeatherworksUtils.leatherParts, rabbityield);
-                
-                if (GameManager.GetInventoryComponent().GearInInventory(knife1, 1))
+
+                if (GameManager.GetInventoryComponent().GetBestGearItemWithName(knife1.name))
                 {
                     knife1.m_CurrentHP = knife1.m_CurrentHP - 5;
                 }
-                else if (GameManager.GetInventoryComponent().GearInInventory(knife1, 1))
+                else if (GameManager.GetInventoryComponent().GetBestGearItemWithName(knife2.name))
                 {
                     knife2.m_CurrentHP = knife2.m_CurrentHP - 5;
                 }
@@ -300,11 +302,11 @@ namespace Leatherworks
             {
                 GameManager.GetPlayerManagerComponent().InstantiateItemInPlayerInventory(LeatherworksUtils.leatherParts, moosebearyield);
 
-                if (GameManager.GetInventoryComponent().GearInInventory(knife1, 1))
+                if (GameManager.GetInventoryComponent().GetBestGearItemWithName(knife1.name))
                 {
                     knife1.m_CurrentHP = knife1.m_CurrentHP - 15;
                 }
-                else if (GameManager.GetInventoryComponent().GearInInventory(knife2, 1))
+                else if (GameManager.GetInventoryComponent().GetBestGearItemWithName(knife2.name))
                 {
                     knife2.m_CurrentHP = knife2.m_CurrentHP - 15;
                 }
@@ -344,7 +346,7 @@ namespace Leatherworks
                 GameAudioManager.PlayGuiConfirm();
                 InterfaceManager.GetPanel<Panel_GenericProgressBar>().Launch(Localization.Get("GAMEPLAY_LW_TanLeatherProgressBar"), 5f, 0f, 0f,
                                 "PLAY_PUTINPOTWATERACORNSSHELLED", null, false, true, new System.Action<bool, bool, float>(OnLeatherAddFinished));
-                GameManager.GetInventoryComponent().RemoveGearFromInventory(leatherScraped.name, 5);
+                leatherScraped.m_StackableItem.m_Units -= 5;
                 GearItem.Destroy(thisGearItem);
             }
             else
@@ -356,7 +358,7 @@ namespace Leatherworks
         }
         private static void OnLeatherAddFinished(bool success, bool playerCancel, float progress)
         {
-                GameManager.GetPlayerManagerComponent().InstantiateItemInPlayerInventory(LeatherworksUtils.boxTanStart, 1);
+            GameManager.GetPlayerManagerComponent().InstantiateItemInPlayerInventory(LeatherworksUtils.boxTanStart, 1);
         }
 
         private static void OnTanningAdd()
@@ -387,7 +389,7 @@ namespace Leatherworks
                 GameAudioManager.PlayGuiConfirm();
                 InterfaceManager.GetPanel<Panel_GenericProgressBar>().Launch(Localization.Get("GAMEPLAY_LW_AddTanningProgressBar"), 5f, 0f, 0f,
                                 "PLAY_PUTINPOTWATER", null, false, true, new System.Action<bool, bool, float>(OnTanningAddFinished));
-                GameManager.GetInventoryComponent().RemoveGearFromInventory(tanningliquid.name, amountint);
+                tanningliquid.m_StackableItem.m_Units -= amountint;
                 GearItem.Destroy(thisGearItem);
             }
             else
@@ -404,10 +406,10 @@ namespace Leatherworks
         private static void OnCrushBark()
         {
 
-             var thisGearItem = LWFunctionalities.barkItem;
-             float amount = Settings.instance.flourAmount;
-             int amountint = Convert.ToInt32(amount);
-             
+            var thisGearItem = LWFunctionalities.barkItem;
+            float amount = Settings.instance.flourAmount;
+            int amountint = Convert.ToInt32(amount);
+
 
             GearItem fried1 = GameManager.GetInventoryComponent().GetBestGearItemWithName("GEAR_BarkPreparedFried");
             GearItem fried2 = GameManager.GetInventoryComponent().GetBestGearItemWithName("GEAR_BarkPreparedFriedPile");
@@ -415,7 +417,7 @@ namespace Leatherworks
             if (thisGearItem == null) return;
             if (Settings.instance.noGrind == true)
             {
-                if (GameManager.GetInventoryComponent().GearInInventory(LeatherworksUtils.hammer2, 1) || GameManager.GetInventoryComponent().GearInInventory(LeatherworksUtils.hammer1, 1))
+                if (GameManager.GetInventoryComponent().GetBestGearItemWithName(LeatherworksUtils.hammer2.name) || GameManager.GetInventoryComponent().GetBestGearItemWithName(LeatherworksUtils.hammer1.name))
                 {
                     if (thisGearItem.name == "GEAR_BarkPreparedFried")
                     {
@@ -430,7 +432,7 @@ namespace Leatherworks
                         GameAudioManager.PlayGuiConfirm();
                         InterfaceManager.GetPanel<Panel_GenericProgressBar>().Launch(Localization.Get("GAMEPLAY_LW_CrushProgressBar"), 3f, 0f, 0f,
                                         "PLAY_CRAFTINGACORNSGRINDING", null, false, true, new System.Action<bool, bool, float>(OnCrushBarkFinished));
-                        GameManager.GetInventoryComponent().RemoveGearFromInventory(fried1.name, amountint);
+                        fried1.m_StackableItem.m_Units -= amountint;
                     }
                     else if (thisGearItem.name == "GEAR_BarkPreparedFriedPile")
                     {
@@ -445,7 +447,7 @@ namespace Leatherworks
                         GameAudioManager.PlayGuiConfirm();
                         InterfaceManager.GetPanel<Panel_GenericProgressBar>().Launch(Localization.Get("GAMEPLAY_LW_CrushProgressBar"), 3f, 0f, 0f,
                                         "PLAY_CRAFTINGACORNSGRINDING", null, false, true, new System.Action<bool, bool, float>(OnCrushBarkFinished));
-                        GameManager.GetInventoryComponent().RemoveGearFromInventory(fried2.name, amountint / 5);
+                        fried2.m_StackableItem.m_Units -= amountint / 5;
                     }
                 }
                 else
@@ -456,7 +458,7 @@ namespace Leatherworks
             }
             else
             {
-                if (GameManager.GetInventoryComponent().GearInInventory(LeatherworksUtils.hammer1, 1))
+                if (GameManager.GetInventoryComponent().GetBestGearItemWithName(LeatherworksUtils.hammer1.name))
                 {
                     if (thisGearItem.name == "GEAR_BarkPreparedFried")
                     {
@@ -471,7 +473,7 @@ namespace Leatherworks
                         GameAudioManager.PlayGuiConfirm();
                         InterfaceManager.GetPanel<Panel_GenericProgressBar>().Launch(Localization.Get("GAMEPLAY_LW_CrushProgressBar"), 3f, 0f, 0f,
                                         "PLAY_CRAFTINGACORNSGRINDING", null, false, true, new System.Action<bool, bool, float>(OnCrushBarkFinished));
-                        GameManager.GetInventoryComponent().RemoveGearFromInventory(fried1.name, amountint);
+                        fried1.m_StackableItem.m_Units -= amountint;
                     }
                     else if (thisGearItem.name == "GEAR_BarkPreparedFriedPile")
                     {
@@ -486,7 +488,7 @@ namespace Leatherworks
                         GameAudioManager.PlayGuiConfirm();
                         InterfaceManager.GetPanel<Panel_GenericProgressBar>().Launch(Localization.Get("GAMEPLAY_LW_CrushProgressBar"), 3f, 0f, 0f,
                                         "PLAY_CRAFTINGACORNSGRINDING", null, false, true, new System.Action<bool, bool, float>(OnCrushBarkFinished));
-                        GameManager.GetInventoryComponent().RemoveGearFromInventory(fried2.name, amountint / 5);
+                        fried2.m_StackableItem.m_Units -= amountint / 5;
                     }
                 }
                 else
@@ -525,7 +527,7 @@ namespace Leatherworks
                 GameAudioManager.PlayGuiConfirm();
                 InterfaceManager.GetPanel<Panel_GenericProgressBar>().Launch(Localization.Get("GAMEPLAY_LW_PileProgressBar"), 1f, 0f, 0f,
                                 "PLAY_CRAFTINGACORNSSHELLING", null, false, true, new System.Action<bool, bool, float>(OnPileBarkFinished));
-                GameManager.GetInventoryComponent().RemoveGearFromInventory(fried.name, 5);
+                fried.m_StackableItem.m_Units -= 5;
             }
             else if (thisGearItem.name == "GEAR_BarkPrepared")
             {
@@ -540,7 +542,7 @@ namespace Leatherworks
                 GameAudioManager.PlayGuiConfirm();
                 InterfaceManager.GetPanel<Panel_GenericProgressBar>().Launch(Localization.Get("GAMEPLAY_LW_PileProgressBar"), 1f, 0f, 0f,
                                 "PLAY_CRAFTINGACORNSSHELLING", null, false, true, new System.Action<bool, bool, float>(OnPileBarkFinished));
-                GameManager.GetInventoryComponent().RemoveGearFromInventory(notfried.name, 5);
+                notfried.m_StackableItem.m_Units -= 5;
             }
             else if (thisGearItem.name == "GEAR_BirchbarkPrepared")
             {
@@ -555,7 +557,7 @@ namespace Leatherworks
                 GameAudioManager.PlayGuiConfirm();
                 InterfaceManager.GetPanel<Panel_GenericProgressBar>().Launch(Localization.Get("GAMEPLAY_LW_PileProgressBar"), 1f, 0f, 0f,
                                 "PLAY_CRAFTINGACORNSSHELLING", null, false, true, new System.Action<bool, bool, float>(OnPileBarkFinished));
-                GameManager.GetInventoryComponent().RemoveGearFromInventory(birch.name, 5);
+                birch.m_StackableItem.m_Units -= 5;
             }
             else if (thisGearItem.name == "GEAR_BirchbarkPreparedFried")
             {
@@ -570,7 +572,7 @@ namespace Leatherworks
                 GameAudioManager.PlayGuiConfirm();
                 InterfaceManager.GetPanel<Panel_GenericProgressBar>().Launch(Localization.Get("GAMEPLAY_LW_PileProgressBar"), 1f, 0f, 0f,
                                 "PLAY_CRAFTINGACORNSSHELLING", null, false, true, new System.Action<bool, bool, float>(OnPileBarkFinished));
-                GameManager.GetInventoryComponent().RemoveGearFromInventory(birchfried.name, 5);
+                birchfried.m_StackableItem.m_Units -= 5;
             }
             else
             {
@@ -581,7 +583,7 @@ namespace Leatherworks
         }
         private static void OnPileBarkFinished(bool success, bool playerCancel, float progress)
         {
-            
+
             if (pileName == "GEAR_BarkPreparedFried")
             {
                 GameManager.GetPlayerManagerComponent().InstantiateItemInPlayerInventory(LeatherworksUtils.barkFriedPile, 1);
@@ -626,7 +628,7 @@ namespace Leatherworks
                 GameAudioManager.PlayGuiConfirm();
                 InterfaceManager.GetPanel<Panel_GenericProgressBar>().Launch(Localization.Get("GAMEPLAY_LW_UnPileProgressBar"), 1f, 0f, 0f,
                                 "PLAY_CRAFTINGACORNSSHELLING", null, false, true, new System.Action<bool, bool, float>(OnUnPileBarkFinished));
-                GameManager.GetInventoryComponent().RemoveGearFromInventory(fried.name, 1);
+                fried.m_StackableItem.m_Units -= 1;
             }
             else if (thisGearItem.name == "GEAR_BarkPreparedPile")
             {
@@ -642,7 +644,7 @@ namespace Leatherworks
                 GameAudioManager.PlayGuiConfirm();
                 InterfaceManager.GetPanel<Panel_GenericProgressBar>().Launch(Localization.Get("GAMEPLAY_LW_UnPileProgressBar"), 1f, 0f, 0f,
                                 "PLAY_CRAFTINGACORNSSHELLING", null, false, true, new System.Action<bool, bool, float>(OnUnPileBarkFinished));
-                GameManager.GetInventoryComponent().RemoveGearFromInventory(notfried.name, 1);
+                notfried.m_StackableItem.m_Units -= 1;
             }
             else if (thisGearItem.name == "GEAR_BirchBarkPreparedPile")
             {
@@ -658,7 +660,7 @@ namespace Leatherworks
                 GameAudioManager.PlayGuiConfirm();
                 InterfaceManager.GetPanel<Panel_GenericProgressBar>().Launch(Localization.Get("GAMEPLAY_LW_UnPileProgressBar"), 1f, 0f, 0f,
                                 "PLAY_CRAFTINGACORNSSHELLING", null, false, true, new System.Action<bool, bool, float>(OnUnPileBarkFinished));
-                GameManager.GetInventoryComponent().RemoveGearFromInventory(birch.name, 1);
+                birch.m_StackableItem.m_Units -= 1;
             }
             else if (thisGearItem.name == "GEAR_BirchBarkPreparedFriedPile")
             {
@@ -674,7 +676,7 @@ namespace Leatherworks
                 GameAudioManager.PlayGuiConfirm();
                 InterfaceManager.GetPanel<Panel_GenericProgressBar>().Launch(Localization.Get("GAMEPLAY_LW_UnPileProgressBar"), 1f, 0f, 0f,
                                 "PLAY_CRAFTINGACORNSSHELLING", null, false, true, new System.Action<bool, bool, float>(OnUnPileBarkFinished));
-                GameManager.GetInventoryComponent().RemoveGearFromInventory(birchfried.name, 1);
+                birchfried.m_StackableItem.m_Units -= 1;
             }
             else
             {
@@ -713,11 +715,11 @@ namespace Leatherworks
             GearItem birch = GameManager.GetInventoryComponent().GetBestGearItemWithName("GEAR_BirchbarkPrepared");
 
             if (thisGearItem == null) return;
-           
+
             if (thisGearItem.name == "GEAR_BirchbarkPrepared")
             {
                 GameAudioManager.PlayGuiConfirm();
-                GameManager.GetInventoryComponent().RemoveGearFromInventory(birch.name, 1);
+                birch.m_StackableItem.m_Units -= 1;
                 GameManager.GetPlayerManagerComponent().InstantiateItemInPlayerInventory(LeatherworksUtils.birchFry, 1);
             }
         }
@@ -728,14 +730,14 @@ namespace Leatherworks
             var thisGearItem = LWFunctionalities.returnBirchItem;
 
 
-            GearItem birchFry = GameManager.GetInventoryComponent().GetBestGearItemWithName("GEAR_BirchbarkPreparedFryable");
+            GearItem birchFry = GameManager.GetInventoryComponent().GetBestGearItemWithName("GEAR_BirchBarkPreparedFryable");
 
             if (thisGearItem == null) return;
 
             if (thisGearItem.name == "GEAR_BirchBarkPreparedFryable")
             {
                 GameAudioManager.PlayGuiConfirm();
-                GameManager.GetInventoryComponent().RemoveGearFromInventory(birchFry.name, 1);
+                birchFry.m_StackableItem.m_Units -= 1;
                 GameManager.GetPlayerManagerComponent().InstantiateItemInPlayerInventory(LeatherworksUtils.birchClassic, 1);
 
             }
@@ -752,18 +754,18 @@ namespace Leatherworks
 
         private static void OnMakeRope()
         {
-            var knife1 = GameManager.GetInventoryComponent().GearInInventory(LeatherworksUtils.knife1, 1);
-            var knife2 = GameManager.GetInventoryComponent().GearInInventory(LeatherworksUtils.knife2, 1);
+            var knife1 = GameManager.GetInventoryComponent().GetBestGearItemWithName(LeatherworksUtils.knife1.name);
+            var knife2 = GameManager.GetInventoryComponent().GetBestGearItemWithName(LeatherworksUtils.knife2.name);
             //var knife3 = GameManager.GetInventoryComponent().GearInInventory(LeatherworksUtils.knifecamp1, 1);
             //var knife4 = GameManager.GetInventoryComponent().GearInInventory(LeatherworksUtils.knifecamp2, 1);
             var thisGearItem = LWFunctionalities.ropeItem;
             GearItem bark = GameManager.GetInventoryComponent().GetBestGearItemWithName("GEAR_BarkPrepared");
 
             if (thisGearItem == null) return;
-            if (GameManager.GetInventoryComponent().GearInInventory(knife1, 1) || GameManager.GetInventoryComponent().GearInInventory(knife2, 1))
+            if (GameManager.GetInventoryComponent().GetBestGearItemWithName(knife1.name) || GameManager.GetInventoryComponent().GetBestGearItemWithName(knife2.name))
             {
-                
-                
+
+
                 if (bark == null)
                 {
                     HUDMessage.AddMessage(Localization.Get("GAMEPLAY_LW_NoRope"));
@@ -781,7 +783,7 @@ namespace Leatherworks
                     GameAudioManager.PlayGuiConfirm();
                     InterfaceManager.GetPanel<Panel_GenericProgressBar>().Launch(Localization.Get("GAMEPLAY_LW_MakeRopeProgressBar"), 2f, 3f, 0f,
                                     "PLAY_HARVESTINGLEATHER", null, false, true, new System.Action<bool, bool, float>(OnMakeRopeFinished));
-                    GameManager.GetInventoryComponent().RemoveGearFromInventory(bark.name, 4);
+                    bark.m_StackableItem.m_Units -= 4;
                 }
                 else
                 {
@@ -798,15 +800,15 @@ namespace Leatherworks
         }
         private static void OnMakeRopeFinished(bool success, bool playerCancel, float progress)
         {
-            var knife1 = GameManager.GetInventoryComponent().GearInInventory(LeatherworksUtils.knife1, 1);
-            var knife2 = GameManager.GetInventoryComponent().GearInInventory(LeatherworksUtils.knife2, 1);
+            var knife1 = GameManager.GetInventoryComponent().GetBestGearItemWithName(LeatherworksUtils.knife1.name);
+            var knife2 = GameManager.GetInventoryComponent().GetBestGearItemWithName(LeatherworksUtils.knife2.name);
             //var knife3 = GameManager.GetInventoryComponent().GearInInventory(LeatherworksUtils.knifecamp1, 1);
             //var knife4 = GameManager.GetInventoryComponent().GearInInventory(LeatherworksUtils.knifecamp2, 1);
-            if (GameManager.GetInventoryComponent().GearInInventory(knife1, 1))
+            if (GameManager.GetInventoryComponent().GetBestGearItemWithName(knife1.name))
             {
                 knife1.m_CurrentHP = knife1.m_CurrentHP - 3;
-            }    
-            else if (GameManager.GetInventoryComponent().GearInInventory(knife2, 1))
+            }
+            else if (GameManager.GetInventoryComponent().GetBestGearItemWithName(knife2.name))
             {
                 knife2.m_CurrentHP = knife2.m_CurrentHP - 4;
             }
@@ -825,7 +827,7 @@ namespace Leatherworks
         private static void OnMakeString()
         {
             var thisGearItem = LWFunctionalities.stringItem;
-            GearItem rope  = GameManager.GetInventoryComponent().GetBestGearItemWithName("GEAR_BarkRope");
+            GearItem rope = GameManager.GetInventoryComponent().GetBestGearItemWithName("GEAR_BarkRope");
 
             if (thisGearItem == null) return;
             if (rope == null)
@@ -846,7 +848,7 @@ namespace Leatherworks
                 GameAudioManager.PlayGuiConfirm();
                 InterfaceManager.GetPanel<Panel_GenericProgressBar>().Launch(Localization.Get("GAMEPLAY_LW_MakeStringProgressBar"), 2f, 0f, 0f,
                                 "PLAY_HARVESTINGLEATHER", null, false, true, new System.Action<bool, bool, float>(OnMakeStringFinished));
-                GameManager.GetInventoryComponent().RemoveGearFromInventory(rope.name, 3);
+                rope.m_StackableItem.m_Units -= 3;
             }
             else
             {

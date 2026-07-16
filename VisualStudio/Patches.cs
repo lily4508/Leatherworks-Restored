@@ -30,6 +30,7 @@ namespace Leatherworks
                 LWFunctionalities.pileItem = gi?.GetComponent<GearItem>();
                 LWFunctionalities.unPileItem = gi?.GetComponent<GearItem>();
                 LWFunctionalities.fryBirchItem = gi?.GetComponent<GearItem>();
+                LWFunctionalities.returnBirchItem = gi?.GetComponent<GearItem>(); // was this missing on purpose?
                 LWFunctionalities.placeBoxItem = gi?.GetComponent<GearItem>();
                 LWFunctionalities.ropeItem = gi?.GetComponent<GearItem>();
                 LWFunctionalities.stringItem = gi?.GetComponent<GearItem>();
@@ -43,8 +44,8 @@ namespace Leatherworks
                     LWFunctionalities.SetScrapeFurActive(false);
                 }
 
-                
-               
+
+
                 if (gi != null && LeatherworksUtils.IsTanFilled(gi.name) == true)
                 {
                     LWFunctionalities.SetLeatherAddActive(true);
@@ -54,8 +55,8 @@ namespace Leatherworks
                     LWFunctionalities.SetLeatherAddActive(false);
                 }
 
-                
-                
+
+
                 if (gi != null && LeatherworksUtils.IsTanEmpty(gi.name) == true)
                 {
                     LWFunctionalities.SetTanningAddActive(true);
@@ -65,8 +66,8 @@ namespace Leatherworks
                     LWFunctionalities.SetTanningAddActive(false);
                 }
 
-                
-                
+
+
                 if (gi != null && LeatherworksUtils.IsFriedBark(gi.name) == true)
                 {
                     LWFunctionalities.SetCrushBarkActive(true);
@@ -161,8 +162,7 @@ namespace Leatherworks
             }
         }
 
-       
+
 
     }
 }
-    
